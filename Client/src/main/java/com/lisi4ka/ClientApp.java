@@ -16,6 +16,7 @@ import java.util.*;
 import static java.lang.Thread.sleep;
 
 public class ClientApp {
+    public static boolean loginFlag = false;
     static boolean serverWork = true;
     static Queue<ByteBuffer> queue = new LinkedList<>();
     public static CommandMap commandMap = null;

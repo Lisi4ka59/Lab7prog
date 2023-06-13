@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import static com.lisi4ka.ClientApp.commandMap;
+import static com.lisi4ka.ClientApp.loginFlag;
 
 public class ClientValidation {
     public static PackagedCommand[] validation() {
@@ -18,15 +19,28 @@ public class ClientValidation {
                 if ("".equals(commandText[0])) {
                     continue;
                 }
+                if ("login".equals(commandText[0]) && loginFlag){
+                    System.out.println("First you need to log out!");
+                    continue;
+                }
+                PackagedCommand[] request = null;
                 try {
                     if (commandMap.containsKey(commandText[0])) {
                         Validation valid = commandMap.get(commandText[0]);
-                        return valid.valid(commandText);
+                        request = valid.valid(commandText);
                     } else{
                         System.out.print("Unknown command! Type \"help\" to open command list");
                     }
                 } catch (IllegalArgumentException ex) {
                     System.out.print(ex.getMessage());
+                }
+                if ("login".equals(commandText[0])){
+                    loginFlag = true;
+                } else if ("logout".equals(commandText[0])){
+                    loginFlag = false;
+                }
+                if (request != null){
+                    return request;
                 }
             } catch (NoSuchElementException e) {
                 System.out.println("Program termination");
