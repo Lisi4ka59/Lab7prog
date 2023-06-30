@@ -19,20 +19,24 @@ public class ClientValidation {
                 if ("".equals(commandText[0])) {
                     continue;
                 }
+                PackagedCommand[] request = null;
                 if ("login".equals(commandText[0]) && loginFlag){
                     System.out.println("First you need to log out!");
                     continue;
-                }
-                PackagedCommand[] request = null;
-                try {
-                    if (commandMap.containsKey(commandText[0])) {
-                        Validation valid = commandMap.get(commandText[0]);
-                        request = valid.valid(commandText);
-                    } else{
-                        System.out.print("Unknown command! Type \"help\" to open command list");
+                }else if ("login".equals(commandText[0]) || loginFlag) {
+                    try {
+                        if (commandMap.containsKey(commandText[0])) {
+                            Validation valid = commandMap.get(commandText[0]);
+                            request = valid.valid(commandText);
+                        } else {
+                            System.out.println("Unknown command! Type \"help\" to open command list");
+                        }
+                    } catch (IllegalArgumentException ex) {
+                        System.out.print(ex.getMessage());
                     }
-                } catch (IllegalArgumentException ex) {
-                    System.out.print(ex.getMessage());
+                }else {
+                    System.out.println("Type \"login\" to sign in or \"register\" to sign up");
+                    continue;
                 }
                 if ("login".equals(commandText[0])){
                     loginFlag = true;

@@ -1,13 +1,10 @@
 package com.lisi4ka.commands;
 
 import com.lisi4ka.models.City;
+import com.lisi4ka.utils.BdManager;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
-
-import static com.lisi4ka.utils.BdConnect.conn;
-
 
 public class RemoveByIdCommand implements Command {
     private final List<City> collection;
@@ -17,14 +14,13 @@ public class RemoveByIdCommand implements Command {
     }
 
     private String remove(int id, String user) {
+        BdManager bdManager = new BdManager();
         boolean removed = false;
         for (City city : collection) {
             if (city.getId() == id) {
                 if (city.getUser().equals(user)){
                     try {
-                        PreparedStatement statement = conn.prepareStatement("DELETE FROM city where id = ?");
-                        statement.setInt(1, id);
-                        statement.executeUpdate();
+                        bdManager.bdRemove(id);
                     } catch (SQLException e) {
                         e.printStackTrace();
                         return String.format("Can not remove city %d, because of data base problem", id);

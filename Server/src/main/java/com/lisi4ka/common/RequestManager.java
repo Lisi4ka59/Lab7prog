@@ -1,5 +1,6 @@
 package com.lisi4ka.common;
 
+import com.lisi4ka.utils.BdManager;
 import com.lisi4ka.utils.PackagedCommand;
 
 import java.io.ByteArrayInputStream;
@@ -10,13 +11,9 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Base64;
-import java.util.LinkedList;
 
 import static com.lisi4ka.common.ServerApp.*;
-import static com.lisi4ka.utils.BdConnect.conn;
 
 public class RequestManager implements Runnable {
     SelectionKey key;
@@ -60,7 +57,8 @@ public class RequestManager implements Runnable {
                         } else if ("register".equals(packagedCommand.getCommandName())) {
                             if (!logins.containsKey(packagedCommand.getLogin())){
                                 String[] logpswd = packagedCommand.getCommandArguments().split("@");
-                                stringBuilder.append(loginInsert(logpswd));
+                                BdManager bdManager = new BdManager();
+                                stringBuilder.append(bdManager.loginInsert(logpswd)/*loginInsert(logpswd)*/);
                             } else{
                                 stringBuilder.append(String.format("User with login \"%s\" is already exist!", packagedCommand.getLogin()));
                             }
@@ -107,17 +105,17 @@ public class RequestManager implements Runnable {
         }
     }
 
-    private String loginInsert(String[] logpswd) {
-        try {
-            PreparedStatement statement = conn.prepareStatement("INSERT INTO account (login, password) values (?, ?)");
-            statement.setString(1, logpswd[0]);
-            statement.setString(2, logpswd[1]);
-            statement.executeUpdate();
-            logins.put(logpswd[0], logpswd[1]);
-            return String.format("You are registered with username \"%s\"\nTo sign in, type \"login\" and enter your login and password", logpswd[0]);
-        } catch (SQLException e) {
-            //e.printStackTrace();
-            return "You are not registered yet, because of error in data base!";
-        }
-    }
+//    private String loginInsert(String[] logpswd) {
+//        try {
+//            PreparedStatement statement = conn.prepareStatement("INSERT INTO account (login, password) values (?, ?)");
+//            statement.setString(1, logpswd[0]);
+//            statement.setString(2, logpswd[1]);
+//            statement.executeUpdate();
+//            logins.put(logpswd[0], logpswd[1]);
+//            return String.format("You are registered with username \"%s\"\nTo sign in, type \"login\" and enter your login and password", logpswd[0]);
+//        } catch (SQLException e) {
+//            //e.printStackTrace();
+//            return "You are not registered yet, because of error in data base!";
+//        }
+//    }
 }

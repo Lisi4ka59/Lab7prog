@@ -94,6 +94,11 @@ public class ServerApp {
                     if (key.isValid() && key.isReadable()) {
                         RequestManager requestManager = new RequestManager(key);
                         Thread thread1 = new Thread(requestManager);
+                        //thread1.setDaemon(true);
+                        //thread1.setPriority(8);
+                        //thread1.setDaemon(false);
+                        //thread1.start();
+                        //thread1.setDaemon(true);
                         executor.submit(thread1);
                         sleep(1);
                     }
